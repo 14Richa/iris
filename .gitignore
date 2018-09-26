@@ -130,3 +130,5 @@ ENV/
 
 #credential file
 config.ini
+
+Pipfile.lock

@@ -25,6 +25,7 @@ mozinstall = "*"
 mozdownload = "*"
 mozversion = "*"
 mozinfo = "*"
+wxpython = "*"
 "pep8" = "*"
 
 [dev-packages]
