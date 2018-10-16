@@ -88,10 +88,12 @@ if [[ ! $(tesseract -v) ]]; then
         wget https://github.com/tesseract-ocr/tesseract/archive/3.05.02.tar.gz
     fi
 
-    if [ -f 3.05.02.tar.gz ]; then
-        tar xopf 3.05.02.tar.gz
-    else
-        echo -e "\n${RED}  --->  Tesseract archive 3.05.02.tar.gz not found! Maybe download failed. ${NC}\n" && exit 0
+    if [ ! -d tesseract-3.05.02 ]; then
+        if [ -f 3.05.02.tar.gz ]; then
+            tar xopf 3.05.02.tar.gz
+        else
+            echo -e "\n${RED}  --->  Tesseract archive 3.05.02.tar.gz not found! Maybe download failed. ${NC}\n" && exit 0
+        fi
     fi
 
     if [ ! -d tesseract-3.05.02 ]; then
