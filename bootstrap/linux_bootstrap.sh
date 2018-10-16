@@ -114,17 +114,6 @@ else
 fi
 
 
-./autogen.sh
-./configure --enable-debug
-LDFLAGS="-L/usr/local/lib" CFLAGS="-I/usr/local/include" make
-sudo make install
-sudo make install-langs
-sudo ldconfig
-cd ~
-rm 3.05.02.tar.gz
-
-
-
 echo -e "\n${GREEN}##### Downloading and installing Tesseract data #####${NC}\n"
 
 if  [ ! -d /usr/local/share/tessdata/ ]; then
