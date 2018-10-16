@@ -81,9 +81,39 @@ NC='\033[0m' # No Color
 #
 echo -e "\n${GREEN}##### installing Tesseract #####${NC}\n"
 
-wget https://github.com/tesseract-ocr/tesseract/archive/3.05.02.tar.gz
-tar xopf 3.05.02.tar.gz
-cd tesseract-3.05.02
+if [[ ! $(tesseract -v) ]]; then
+    cd ~
+    if [ ! -f 3.05.02.tar.gz ]; then
+        echo "  --->  Downloading Tesseract archive 3.05.02.tar.gz"
+        wget https://github.com/tesseract-ocr/tesseract/archive/3.05.02.tar.gz
+    fi
+
+    if [ -f 3.05.02.tar.gz ]; then
+        tar xopf 3.05.02.tar.gz
+    else
+        echo -e "\n${RED}  --->  Tesseract archive 3.05.02.tar.gz not found! Maybe download failed. ${NC}\n" && exit 0
+    fi
+
+    if [ ! -d tesseract-3.05.02 ]; then
+        echo "  --->  tesseract-3.05.02 directory not found! Maybe the extraction failed." && exit 0
+    else
+        cd tesseract-3.05.02
+    fi
+
+    if [[ "$PWD" =~ tesseract-3.05.02 ]]; then
+        ./autogen.sh
+        ./configure --enable-debug
+        LDFLAGS="-L/usr/local/lib" CFLAGS="-I/usr/local/include" make
+        sudo make install
+        sudo make install-langs
+        sudo ldconfig
+    fi
+
+else
+    echo -e "\n${GREEN}Skipping Tesseract install. Already installed. ${NC}\n"
+fi
+
+
 ./autogen.sh
 ./configure --enable-debug
 LDFLAGS="-L/usr/local/lib" CFLAGS="-I/usr/local/include" make
@@ -106,11 +136,6 @@ if  [ ! -d /usr/local/share/tessdata/ ]; then
         wget https://github.com/tesseract-ocr/tessdata/archive/3.04.00.zip
     fi
 
-    if [ ! -f 3.04.00.zip ]; then
-        echo -e "\n${RED}  --->  Tessdata archive 3.04.00.zip file not found! Maybe download failed. ${NC}\n" && exit 0
-    fi
-
-
     if [ -f 3.04.00.zip ]; then
         if [[ $(find 3.04.00.zip -type f -size +490000000c 2>/dev/null) ]]; then
             echo -e "\n${GREEN}  --->  Download finished. Unziping Tessdata archive 3.04.00.zip ${NC}\n"
@@ -119,10 +144,12 @@ if  [ ! -d /usr/local/share/tessdata/ ]; then
             echo -e "\n${RED}  --->  Tessdata archive 3.04.00.zip is not the correct size. Maybe download was stopped or did not completely finish. ${NC}\n"
             echo -e "${RED}        Please delete the file and restart the process. ${NC}\n" && exit 0
         fi
+    else
+        echo -e "\n${RED}  --->  Tessdata archive 3.04.00.zip not found! Maybe download failed. ${NC}\n" && exit 0
     fi
 
     if [ ! -d tessdata-3.04.00 ]; then
-        echo "  --->  tessdata-3.04.00 directory not found! Maybe the extracting failed." && exit 0
+        echo "  --->  tessdata-3.04.00 directory not found! Maybe the extraction failed." && exit 0
     else
         cd tessdata-3.04.00
     fi
